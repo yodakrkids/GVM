@@ -7,9 +7,9 @@
 
 <p align="center">
 <a href='https://yongtaoge.github.io/project/gvm'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp;
-<a href="https://dl.acm.org/doi/10.1145/3721238.3730642"><img src="https://img.shields.io/badge/arXiv-2508.05639-b31b1b.svg"></a> &nbsp;
+<a href="https://arxiv.org/abs/2508.07905"><img src="https://img.shields.io/badge/arXiv-2508.07905-b31b1b.svg"></a> &nbsp;
 <a href="https://github.com/aim-uofa/GVM"><img src="https://img.shields.io/badge/GitHub-Code-black?logo=github"></a> &nbsp;
-<a href='https://huggingface.co/datasets/geyongtao/video_matting'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-blue'></a> &nbsp;
+<a href='https://huggingface.co/datasets/geyongtao/SynHairMan'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-blue'></a> &nbsp;
 <a href="https://huggingface.co/geyongtao/gvm"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-blue"></a>
 </p>
 

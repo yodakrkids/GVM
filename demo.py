@@ -85,7 +85,7 @@ if "__main__" == __name__:
     parser.add_argument(
         "--mode",
         type=str,
-        default="depth",
+        default="matte",
         help="Inference mode.",
     )
     parser.add_argument(
@@ -97,7 +97,7 @@ if "__main__" == __name__:
     parser.add_argument(
         "--model_base",
         type=str,
-        default="hhyangcs/depth-any-video",
+        default="data/weights",
         help="Checkpoint path or hub name.",
     )
     parser.add_argument(
@@ -354,12 +354,6 @@ if "__main__" == __name__:
             # batch = img_utils.imresize_max(batch, cfg.max_resolution)
             batch, pad_info = impad_multi(batch)
 
-            # if batch.shape[0] <= cfg.num_frames_per_batch:
-            # if args.num_frames_per_batch == 0:
-            #     num_frames = batch.shape[0]
-            # else:
-            #     num_frames = int(cfg.num_frames_per_batch / 2)
-
             pipe_out = pipe(
                 batch.to(device),
                 # num_frames=num_frames,
@@ -394,49 +388,3 @@ if "__main__" == __name__:
             else:
                 writer_alpha.write(alpha)
                 writer_alpha_seq.write(alpha, filenames=filenames)
-
-            # if not cfg.output_results_only:
-            #     merged = np.concatenate(
-            #         [
-            #             image,
-            #             # pred_rgb,
-            #             alpha,
-
-            #         ],
-            #         axis=2,
-            #     )
-            # else:
-            #     merged = alpha
-            # import pdb;pdb.set_trace()
-            if False:
-                bg_color = np.zeros(image[0].permute(1,2,0).shape)
-                # bg_color[...,0] = 136
-                # bg_color[...,1] = 224
-                # bg_color[...,2] = 177
-
-                bg_color[...,0] = int(0.47 * 255)
-                bg_color[...,1] = 255
-                bg_color[...,2] = int(0.6 * 255)
-                # import pdb;pdb.set_trace()
-                # bgr = torch.tensor([.47, 1, .6]) * 255
-                # (N, H, 2 * W, 3)
-                comp_images = []
-                for i in tqdm(range(image.shape[0])):
-                    # alpha_3dim = np.repeat(alpha[i][:,:,None], 3, 2)
-                    alpha_1dim = alpha[i]
-                    alpha_3dim = alpha_1dim.repeat(3, 1, 1).permute(1, 2, 0).cpu().numpy()
-                    alpha_1dim = alpha_1dim.cpu().numpy()
-
-                    fg = FB_blur_fusion_foreground_estimator_2(image[i].permute(1,2,0).cpu().numpy(), alpha_1dim[0])
-                    fg *= 255
-                    fg = fg.astype(np.float32)
-                    comp_image = alpha_3dim * fg + (1-alpha_3dim) * bg_color
-                #     Write frame.
-                #     writer_alpha.write_numpy(alpha[i][None])
-                    writer_green.write_numpy(comp_image[None].astype(np.uint8))
-                    # import pdb;pdb.set_trace()
-                    cv2.imwrite(filenames_green[i], comp_image.astype(np.uint8))
-                    # writer_green_seq.write(comp_image[None], filenames=)
-
-        # print('total output video frames" {}'.format(image.shape[0]))
-        
