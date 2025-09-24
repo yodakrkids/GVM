@@ -77,7 +77,14 @@ def FB_blur_fusion_foreground_estimator_2(image, alpha, r=90):
 
     
 if "__main__" == __name__:
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        handlers=[
+            logging.FileHandler("demo.log"),
+            logging.StreamHandler()
+        ]
+    )
 
     parser = argparse.ArgumentParser(
         description="Run video matte."

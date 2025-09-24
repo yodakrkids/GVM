@@ -1,0 +1,1 @@
+`installation.md` 파일을 `d:\works_AI\GVM\` 경로에 생성했습니다. 이 파일은 `demo.py` 실행에 필요한 환경 설정 절차를 기술합니다. `README.md`, `requirements.txt`, `setup.py`, `demo.py` 파일의 내용을 분석하여 Python 라이브러리, Conda 환경, 모델 가중치 다운로드 등 설치에 필요한 모든 단계를 종합하여 작성했습니다.

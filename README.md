@@ -60,7 +60,7 @@ python setup.py develop
 You need to download the model weights by:
 
 ```
-hugginface-cli download geyongtao/gvm --local-dir data/weights
+hf download geyongtao/gvm --local-dir data/weights
 ```
 
 The ckpt structure should be like:
