@@ -125,14 +125,34 @@ GVM/
 
 ## 7. 설치 확인 및 테스트
 
-모든 설치가 완료되면 다음 명령어로 테스트 실행이 가능합니다:
-
+### Step 1: 패키지 설치 확인
 ```bash
-# 빠른 테스트 (60프레임만 처리)
-python demo.py --model_base data/weights --unet_base data/weights/unet --lora_base data/weights/unet --mode matte --num_frames_per_batch 16 --max_frames 60 --denoise_steps 1 --decode_chunk_size 16 --max_resolution 1024 --pretrain_type svd --data_dir data/Sony_Lens_Test.mp4 --output_dir output_test
+# CUDA PyTorch 확인
+python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA: {torch.cuda.is_available()}')"
+
+# OpenCV 확인
+python -c "import cv2; print(f'OpenCV: {cv2.__version__}')"
+
+# 기타 패키지 확인
+python -c "import diffusers, transformers, av; print('All packages OK')"
 ```
 
-성공적으로 실행되면 `output_test` 폴더에 결과 비디오가 생성됩니다.
+### Step 2: 빠른 실행 테스트
+```bash
+# 30프레임 테스트 (RTX 3090에서 약 4-5분 소요)
+python demo.py --model_base data/weights --unet_base data/weights/unet --lora_base data/weights/unet --mode matte --num_frames_per_batch 8 --max_frames 30 --denoise_steps 1 --decode_chunk_size 8 --max_resolution 1024 --size 720 --pretrain_type svd --data_dir data/Sony_Lens_Test.mp4 --output_dir output_test
+```
+
+### Step 3: 성공 확인
+- `output_test` 폴더에 결과 파일들 생성 확인:
+  - `*.mp4`: 매팅 결과 비디오
+  - `*_green.mp4`: 그린스크린 합성 비디오
+  - `*.jpg`: 개별 프레임 이미지들
+
+### 예상 처리 시간 (RTX 3090 기준):
+- **30프레임**: 4-5분
+- **60프레임**: 8-10분
+- **전체 비디오**: 프레임 수에 비례
 
 ---
 

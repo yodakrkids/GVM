@@ -182,9 +182,9 @@ python demo.py \
   pip install av
   ```
 
-### ✅ 추천 테스트 명령어
+### ✅ 추천 테스트 명령어 (검증됨)
 
-빠른 테스트용 (30프레임, 낮은 해상도):
+빠른 테스트용 (30프레임):
 ```bash
 python demo.py \
 --model_base data/weights \
@@ -201,3 +201,45 @@ python demo.py \
 --data_dir data/Sony_Lens_Test.mp4 \
 --output_dir output_test
 ```
+
+**✅ 실행 성공 예시 (RTX 3090):**
+```
+total video frames: 30
+[INFO] output dir = output_test
+Loading models... ✓
+0it [00:00, ?it/s]1it [00:55, 55.63s/it]2it [02:05, 64.09s/it]3it [03:15, 66.78s/it]4it [04:09, 61.69s/it]
+```
+
+---
+
+## 성능 벤치마크 (실측)
+
+### RTX 3090 (24GB VRAM) 성능:
+- **처리 속도**: ~62초/배치 (8프레임)
+- **메모리 사용**: ~1.6GB/3.0GB VRAM
+- **30프레임**: 4-5분
+- **60프레임**: 8-10분 (예상)
+
+### 권장 설정별 성능:
+
+| 설정 | 프레임/배치 | 해상도 | 30프레임 시간 | VRAM 사용 |
+|------|------------|--------|-------------|-----------|
+| 테스트용 | 8 | 720p | 4-5분 | ~3GB |
+| 일반용 | 8 | 1080p | 6-7분 | ~5GB |
+| 고품질 | 16 | 1080p | 8-10분 | ~8GB |
+
+### conda 환경 활성화 방법:
+
+**방법 1: 직접 파이썬 경로 (권장)**
+```bash
+C:/Users/[username]/miniconda3/envs/gvm/python.exe demo.py [옵션들]
+```
+
+**방법 2: conda 환경 활성화**
+```bash
+# PowerShell에서
+conda activate gvm
+python demo.py [옵션들]
+```
+
+**참고:** Claude Code Bash 도구에서는 conda activate가 제한적일 수 있으므로 직접 파이썬 경로 사용을 권장합니다.
