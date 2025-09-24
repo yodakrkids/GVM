@@ -41,7 +41,7 @@ class VideoWriter:
     def __init__(self, path, frame_rate, bit_rate=1000000):
         self.container = av.open(path, mode='w')
         # self.container.add_stream('h264', rate=30)
-        self.stream = self.container.add_stream('h264', rate=f'{frame_rate:.4f}')
+        self.stream = self.container.add_stream('h264', rate=int(frame_rate))
         self.stream.pix_fmt = 'yuv420p'
         self.stream.bit_rate = bit_rate
     

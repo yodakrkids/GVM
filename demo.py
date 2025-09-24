@@ -266,7 +266,7 @@ if "__main__" == __name__:
     # pipe.to(args.variant)
     
     if args.lora_base is not None:
-        pipe.load_lora_weights(f"{args.lora_base}/pytorch_lora_weights.safetensors")
+        pipe.load_lora_weights(args.lora_base)
     
     pipe = pipe.to(device)
 
