@@ -1,2 +1,7 @@
 data/
 output/
+.claude/
+demo.log
+gvm.egg-info/
+__pycache__/
+output_test/
