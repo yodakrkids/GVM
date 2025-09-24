@@ -30,35 +30,41 @@
 - `--seed`: 랜덤 시드 (재현 가능한 결과를 위해 설정)
 - `--output_image_seq_only`: 이미지 시퀀스만 출력 (비디오 파일 생성 안함)
 
+### ⚠️ 중요한 파라미터 관계
+- **max_resolution > size**: max_resolution은 size보다 커야 함
+- **배치 크기와 메모리**: num_frames_per_batch와 decode_chunk_size는 GPU 메모리에 따라 조정
+- **프레임 처리**: max_frames로 테스트용 부분 처리 가능
+
 ---
 
 ## 실행 유즈케이스
 
-### 1. 기본 실행 (원본)
+### 1. 기본 실행 (수정된 안전한 버전)
 ```bash
 python demo.py \
---model_base 'data/weights/' \
+--model_base data/weights \
 --unet_base data/weights/unet \
 --lora_base data/weights/unet \
---mode 'matte' \
+--mode matte \
 --num_frames_per_batch 8 \
 --num_interp_frames 1 \
 --num_overlap_frames 1 \
 --denoise_steps 1 \
 --decode_chunk_size 8 \
---max_resolution 960 \
---pretrain_type 'svd' \
---data_dir 'data/Sony_Lens_Test.mp4' \
---output_dir 'output'
+--max_resolution 1024 \
+--size 720 \
+--pretrain_type svd \
+--data_dir data/Sony_Lens_Test.mp4 \
+--output_dir output
 ```
 
 ### 2. 메모리 최적화 (저사양 GPU)
 ```bash
 python demo.py \
---model_base 'data/weights/' \
+--model_base data/weights \
 --unet_base data/weights/unet \
 --lora_base data/weights/unet \
---mode 'matte' \
+--mode matte \
 --num_frames_per_batch 4 \
 --num_interp_frames 1 \
 --num_overlap_frames 1 \
@@ -66,9 +72,9 @@ python demo.py \
 --decode_chunk_size 4 \
 --max_resolution 720 \
 --size 512 \
---pretrain_type 'svd' \
---data_dir 'data/Sony_Lens_Test.mp4' \
---output_dir 'output_lowmem'
+--pretrain_type svd \
+--data_dir data/Sony_Lens_Test.mp4 \
+--output_dir output_lowmem
 ```
 
 ### 3. 고품질 처리 (고사양 GPU)
@@ -144,3 +150,54 @@ python demo.py \
 2. `--num_interp_frames` 증가
 3. `--num_overlap_frames` 증가
 4. `--max_resolution` 증가
+
+---
+
+## 문제 해결 (Troubleshooting)
+
+### ❌ 파라미터 검증 오류
+
+**오류**: `ValueError: max_size = 720 must be strictly greater than the requested size for the smaller edge size = [720]`
+- **원인**: `--max_resolution`과 `--size` 값이 같거나 `max_resolution`이 더 작음
+- **해결**: `max_resolution > size`로 설정
+  ```bash
+  # 올바른 예시
+  --max_resolution 1024 --size 720
+  ```
+
+### ❌ 메모리 부족 오류
+
+**오류**: `RuntimeError: CUDA out of memory`
+- **해결 순서**:
+  1. `--num_frames_per_batch` 감소 (8 → 4 → 2)
+  2. `--decode_chunk_size` 감소 (8 → 4)
+  3. `--max_resolution` 감소 (1024 → 720 → 512)
+  4. `--max_frames 30` 추가하여 일부만 처리
+
+### ❌ 모듈 누락 오류
+
+**오류**: `ModuleNotFoundError: No module named 'av'`
+- **해결**:
+  ```bash
+  pip install av
+  ```
+
+### ✅ 추천 테스트 명령어
+
+빠른 테스트용 (30프레임, 낮은 해상도):
+```bash
+python demo.py \
+--model_base data/weights \
+--unet_base data/weights/unet \
+--lora_base data/weights/unet \
+--mode matte \
+--num_frames_per_batch 8 \
+--max_frames 30 \
+--denoise_steps 1 \
+--decode_chunk_size 8 \
+--max_resolution 1024 \
+--size 720 \
+--pretrain_type svd \
+--data_dir data/Sony_Lens_Test.mp4 \
+--output_dir output_test
+```

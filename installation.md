@@ -28,18 +28,39 @@ conda create -n gvm python=3.10 -y
 conda activate gvm
 ```
 
-## 3. 의존성 패키지 설치
+## 3. 의존성 패키지 설치 (권장 방법)
 
-`requirements.txt` 파일을 사용하여 필요한 Python 라이브러리를 설치합니다:
+**⚠️ 중요:** `requirements.txt`를 직접 사용하면 NumPy 2.x 호환성 문제가 발생할 수 있습니다. 아래의 단계별 설치를 권장합니다.
 
+### Step 1: PyTorch CUDA 버전 먼저 설치
 ```bash
-pip install -r requirements.txt
+# CUDA 지원 PyTorch 설치 (NumPy 1.x와 호환)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 ```
 
-그 후, `setup.py` 스크립트를 개발 모드로 실행하여 프로젝트를 올바르게 설정합니다:
-
+### Step 2: OpenCV 및 호환 NumPy 설치
 ```bash
-python setup.py develop
+# OpenCV 안정 버전 설치
+pip install opencv-python==4.8.1.78
+
+# NumPy 호환성 확보 (OpenCV와 PyTorch 호환)
+pip install "numpy<2"
+```
+
+### Step 3: ML 관련 패키지 설치
+```bash
+pip install diffusers==0.35.0 transformers accelerate peft
+```
+
+### Step 4: 기타 필수 패키지 설치
+```bash
+pip install easydict matplotlib PIMS imageio av
+```
+
+### Step 5: 프로젝트 설정 (선택사항)
+```bash
+# setup.py에 인코딩 문제가 있을 수 있으므로 선택사항
+# python setup.py develop
 ```
 
 ## 4. GPU 가속을 위한 PyTorch 설치
@@ -180,5 +201,36 @@ python demo.py --model_base data/weights --unet_base data/weights/unet --lora_ba
   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
   ```
 - **결과:** CPU 대비 10-50배 속도 향상 달성
+
+### 7. 최신 발견된 문제들 (2024년 9월 업데이트)
+
+**7.1 NumPy 2.x 호환성 문제:**
+- **문제:** `AttributeError: _ARRAY_API not found`, `numpy.core.multiarray failed to import`
+- **원인:** OpenCV 4.8.1이 NumPy 2.x와 호환되지 않음
+- **해결:** NumPy를 1.x 버전으로 다운그레이드
+  ```bash
+  pip install "numpy<2"
+  ```
+
+**7.2 환경 손상 시 완전 재구성:**
+- **문제:** pip 자체가 작동하지 않는 환경 손상
+- **해결:** 환경 완전 삭제 후 재생성
+  ```bash
+  conda env remove -n gvm -y
+  conda create -n gvm python=3.10 -y
+  ```
+
+**7.3 av 패키지 누락:**
+- **문제:** `ModuleNotFoundError: No module named 'av'`
+- **해결:** av 패키지 개별 설치
+  ```bash
+  pip install av
+  ```
+
+**7.4 권장 설치 순서:**
+1. PyTorch CUDA 버전 (NumPy 1.x 포함)
+2. OpenCV 안정 버전
+3. ML 패키지 (diffusers, transformers 등)
+4. 기타 유틸리티 패키지
 
 위의 과정을 통해 최종적으로 모든 필수 라이브러리 설치와 GPU 가속 환경 구성을 완료했습니다.
